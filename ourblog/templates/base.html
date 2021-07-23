@@ -1,88 +1,47 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Our Blog</title>
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
 
-    <link
-      href="https://fonts.googleapis.com/css?family=Roboto:400,700"
-      rel="stylesheet">
-    <meta name="google" content="notranslate" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-      crossorigin="anonymous"
-    />
-    
-  </head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <title>Ourblog</title>
+</head>
+<body>  
+        {% include "navbar.html" %}
 
-{% include "navbar.html" %}
-  <body>
-    <style>
-      body {
-        font-family: "Roboto", sans-serif;
-        font-size: 17px;
-        background-color: #fdfdfd;
-      }
+        
 
-    .shadow{
-           box-shadow: 0 4px 2px -2px rgba(0,0,0,0.1);
-       }
-      .btn-danger {
-        color: #fff;
-        background-color: #f00000;
-        border-color: #dc281e;
-      }
-     
-     .masthead {
-              background:#3398E1;
-              height: auto;
-              padding-bottom: 15px;
-              box-shadow: 0 16px 48px #E3E7EB;
-              padding-top: 10px;
-    }
-    </style>
+        <div style = "margin-top : 100px; margin-bottom:100px;" class = "container">
+                
+            {% if messages %}
+                
+                    {% for message in messages %}
+                    {% if message.tags == "info" %}
+                    <div class="alert alert-danger">{{ message }}</div>
+                    {% else %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
 
-    <!-- Navigation -->
-    
-    
-    <div class="mt-5 pt-4">
-    {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-          {{ message }}
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+                    {% endif %}
+
+
+                    {% endfor %}
+                
+                {% endif %}
+            {% block body %}
+            
+            {% endblock body %}
+
         </div>
-        {% endfor %}
-    {% endif %}
-    </div>
-            {% block content %} 
-          <!-- Content Goes here -->
-            {% endblock content %}
     
-    <!-- Footer -->
-    <footer class="py-3 bg-grey">
-              <p class="m-0 text-dark text-center ">Copyright &copy; OurBlog-</p>
-    </footer>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
-  </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
-  </script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
-  </script>
 
-  </body>
-</html>
-
-  <!-- bootstrap scripts -->
+      <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+      <script src="{% static 'js/bootstrap.min.js'%}"></script>
+      <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
   
-
+    </body>
+</html>

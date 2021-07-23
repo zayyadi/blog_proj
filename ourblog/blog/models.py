@@ -1,8 +1,10 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
-from PIL import Image
+from django.template.defaultfilters import slugify
 from django_summernote.fields import SummernoteTextField
+
+
 STATUS = (
     (0,"Draft"),
     (1,"Publish")
@@ -10,11 +12,12 @@ STATUS = (
 # Create your models here.
 class Article(models.Model):
     title = models.CharField(max_length=150)
-    author = models.ForeignKey(User, on_delete= models.CASCADE,related_name='blog_posts')
-    img = models.FilePathField(path="./images")
+    author = models.ForeignKey(User, on_delete= models.CASCADE)
+    image = models.FileField(blank = True,null = True)
     content = SummernoteTextField()
     pub_date = models.DateTimeField(default=timezone.now)
     status = models.IntegerField(choices=STATUS, default=0)
+    slug = models.SlugField(unique=True, max_length=100)
 
     class Meta:
         ordering = ["-pub_date"]
@@ -27,26 +30,14 @@ class Article(models.Model):
 
         return reverse("article-post", kwargs={"pk": str(self.id)})
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        return super(Article, self).save(*args, **kwargs)
 
-    def __str__(self):
-        return f'{self.user.username} Profile'
-
-    def save(self):
-        super().save()
-
-        img = Image.open(self.image.path)
-
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail(output_size)
-            img.save(self.image.path)
-    
 class Comment(models.Model):
     post = models.ForeignKey(Article,on_delete=models.CASCADE,related_name='comments')
-    name = models.CharField(max_length=80)
+    author = models.CharField(max_length=80)
     body = models.TextField()
     created_on = models.DateTimeField(default=timezone.now)
     active = models.BooleanField(default=False)

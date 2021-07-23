@@ -1,16 +1,19 @@
 from django.urls import path
 
-from .views import IndexView, ArticleCreateView, article_post, PostUpdateView, PostDeleteView
+from blog import views
 from .feeds import LatestPostsFeed, AtomSiteNewsFeed
 
 
 urlpatterns=[
     path("feed/rss", LatestPostsFeed(), name="post_feed"),
     path("feed/atom", AtomSiteNewsFeed()),
-    path("", IndexView.as_view(), name='index'),
+    # path("", IndexView.as_view(), name='index'),
     #path('article/<int:pk>/', ArticleDetailView.as_view(), name='article-detail'),
-    path('<int:pk>/', article_post, name='article-post'),
-    path('article/new', ArticleCreateView.as_view(), name='new-article'),
-    path('article/<int:pk>/update/', PostUpdateView.as_view(), name='article-update'),
-    path('article/<int:pk>/delete/', PostDeleteView.as_view(), name='article-delete'),
+    path('dashboard/',views.dashboard,name = "dashboard"),
+    path('addarticle/',views.addArticle,name = "addarticle"),
+    path('article/<slug:slug>/',views.detail,name = "detail"),
+    path('update/<slug:slug>',views.updateArticle,name = "update"),
+    path('delete/<slug:slug>',views.deleteArticle,name = "delete"),
+    path('',views.articles,name = "articles"),
+    path('comment/<slug:slug>',views.addComment,name = "comment"),
 ]
