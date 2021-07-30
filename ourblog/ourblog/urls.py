@@ -34,10 +34,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('blog.urls')),
     path('about/',blog_views.about,name = "about"),
-    path('register/', blog_views.register, name='register'),
-    path('profile/', blog_views.profile, name='profile'),
-    path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='logout.html'), name='logout'),
+    path('', blog_views.articles,name="articles"),
+    path('user/', include('user.urls')),
     path('summernote/', include('django_summernote.urls')),
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
 ]

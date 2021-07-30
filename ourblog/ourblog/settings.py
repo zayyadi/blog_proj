@@ -31,7 +31,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'blog.apps.BlogConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
-    'user.apps.UserConfig',
+    'user',
+    'blog',
+    'taggit',
 ]
 
 INSTALLED_APPS += ('django_summernote', )
@@ -134,7 +135,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
-LOGIN_REDIRECT_URL = 'index'
+LOGIN_REDIRECT_URL = 'articles'
 LOGIN_URL = 'login'
 
 SUMMERNOTE_THEME = 'bs4'

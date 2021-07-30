@@ -1,4 +1,8 @@
-{% extends "base.html" %}
+{% comment %} {% extends "base.html" %} {% endcomment %}
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
 {% load crispy_forms_tags %}
 {% block content %}
     <div class="content-section">
@@ -10,14 +14,11 @@
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Login</button>
-                <small class="text-muted ml-2">
-                    <a href="{% url 'password_reset' %}">Forgot Password?</a>
-                </small>
             </div>
         </form>
         <div class="border-top pt-3">
             <small class="text-muted">
-                Need An Account? <a class="ml-2" href="{% url 'register' %}">Sign Up Now</a>
+                Need An Account? <a class="ml-2" href="{% url 'user:register' %}">Sign Up Now</a>
             </small>
         </div>
     </div>

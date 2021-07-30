@@ -4,44 +4,52 @@
 
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.84.0">
+    {% comment %} <link rel="stylesheet" href="{% static 'css/tagsinput.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}"> {% endcomment %}
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <style>
+    body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="{% static 'js/bootstrap.min.js'%}"></script>
+    <script src="{% static 'js/tagsinput.js'%}"></script>
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
     <title>Ourblog</title>
 </head>
-<body>  
-        {% include "navbar.html" %}
-
+<body class="w3-light-grey">  
+        
+    {% include 'navbar.html' %}       
         
 
-        <div style = "margin-top : 100px; margin-bottom:100px;" class = "container">
-                
-            {% if messages %}
-                
-                    {% for message in messages %}
-                    {% if message.tags == "info" %}
-                    <div class="alert alert-danger">{{ message }}</div>
-                    {% else %}
-                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-
-                    {% endif %}
-
-
-                    {% endfor %}
-                
-                {% endif %}
-            {% block body %}
+    <div style = "margin-top : 100px; margin-bottom:100px;" class = "container">
             
-            {% endblock body %}
+        {% if messages %}
+            
+            {% for message in messages %}
+            {% if message.tags == "info" %}
+            <div class="alert alert-danger">{{ message }}</div>
+            {% else %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
 
-        </div>
-    
+            {% endif %}
 
-      <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-      <script src="{% static 'js/bootstrap.min.js'%}"></script>
-      <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+            {% endfor %}
+            
+        {% endif %}
+        {% block body %}
+        
+        {% endblock body %}
+
+    </div>
   
     </body>
 </html>

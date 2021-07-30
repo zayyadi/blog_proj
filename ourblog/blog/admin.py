@@ -1,6 +1,6 @@
 
 from django.contrib import admin
-from .models import Article, Comment, Profile
+from .models import Article, Comment
 
 from django_summernote.admin import SummernoteModelAdmin
 
@@ -24,4 +24,3 @@ class CommentAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Article, PostAdmin)
-admin.site.register(Profile)

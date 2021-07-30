@@ -3,6 +3,8 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 from django_summernote.fields import SummernoteTextField
+from taggit.managers import TaggableManager
+from user.models import Profile
 
 
 STATUS = (
@@ -18,6 +20,11 @@ class Article(models.Model):
     pub_date = models.DateTimeField(default=timezone.now)
     status = models.IntegerField(choices=STATUS, default=0)
     slug = models.SlugField(unique=True, max_length=100)
+    tags = TaggableManager()
+    likes = models.ManyToManyField(Profile, blank=True, related_name='likes')
+
+    def number_of_likes(self):
+        return self.likes.all().count()
 
     class Meta:
         ordering = ["-pub_date"]
@@ -46,4 +53,19 @@ class Comment(models.Model):
         ordering = ['created_on']
 
     def __str__(self):
-        return f"Comment {self.body} by {self.name}"
+        return f"Comment {self.body} by {self.author}"
+
+LIKE_CHOICES = (
+    ('Like', 'Like'),
+    ('Unlike', 'Unlike'),
+)
+
+class Like(models.Model): 
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    value = models.CharField(choices=LIKE_CHOICES, max_length=8)
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.user}-{self.post}-{self.value}"
