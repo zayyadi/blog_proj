@@ -25,7 +25,7 @@ SECRET_KEY = 'wt&d2y)^fpwkhhvzdxtostzyz+qm#xbsj=6==m2k9uv2eep2je'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['75e8de10585d.ngrok.io', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -37,13 +37,22 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'crispy_forms',
     'user',
     'blog',
     'taggit',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
+    'django_extensions',
 ]
 
 INSTALLED_APPS += ('django_summernote', )
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -89,6 +98,9 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
+
+AUTHENTICATION_BACKENDS = [ 'django.contrib.auth.backends.ModelBackend',
+                           'allauth.account.auth_backends.AuthenticationBackend']
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -137,5 +149,57 @@ X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 LOGIN_REDIRECT_URL = 'articles'
 LOGIN_URL = 'login'
-
+ACCOUNT_LOGOUT_REDIRECT_URL ='/accounts/login/'
 SUMMERNOTE_THEME = 'bs4'
+
+ACCOUNT_AUTHENTICATION_METHOD = 'email' 
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS=7
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory' 
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 86400
+SOCIALACCOUNT_PROVIDERS = {
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SCOPE': ['email', 'public_profile', 'user_friends'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'id',
+            'email',
+            'name',
+            'first_name',
+            'last_name',
+            'verified',
+            'locale',
+            'timezone',
+            'link',
+            'gender',
+            'updated_time',
+        ],
+        'EXCHANGE_TOKEN': True,
+        'LOCALE_FUNC': lambda request: 'en_US',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v2.12',
+    },
+     'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+SOCIALACCOUNT_QUERY_EMAIL=ACCOUNT_EMAIL_REQUIRED
+SOCIALACCOUNT_EMAIL_REQUIRED=ACCOUNT_EMAIL_REQUIRED 
+SOCIALACCOUNT_STORE_TOKENS=False
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.ipage.com'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'musa.zayyad@polarpetrochemicalsltd.com'
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')

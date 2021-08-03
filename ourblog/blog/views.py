@@ -37,7 +37,7 @@ def articles(request, slug=None):
 def about(request):
     return render(request,"about.html")
 
-@login_required(login_url = "user:login")
+@login_required(login_url = "accounts:login")
 def dashboard(request):
     articles = Article.objects.filter(author = request.user)
     context = {
@@ -46,7 +46,7 @@ def dashboard(request):
     return render(request,"dashboard.html",context)
 
 
-@login_required(login_url = "user:login")
+@login_required(login_url = "allauth:account_login")
 def addArticle(request):
     form = ArticleForm(request.POST or None,request.FILES or None)
     common_tags = Article.tags.most_common()[:4]
@@ -73,7 +73,7 @@ def detail(request,slug):
     return render(request,"detail.html",{"article":article,"comments":comments })
 
 
-@login_required(login_url = "user:login")
+@login_required(login_url = "allauth:account_login")
 def updateArticle(request, slug):
 
     article = get_object_or_404(Article, slug=slug)
@@ -89,7 +89,7 @@ def updateArticle(request, slug):
     return render(request,"update.html",{"form":form})
 
 
-@login_required(login_url = "user:login")
+@login_required(login_url = "allauth:account_login")
 def deleteArticle(request,slug):
     article = get_object_or_404(Article,slug=slug)
 
@@ -125,27 +125,27 @@ def tagged(request, slug):
 
 
 
-def BlogPostLike(request, slug):
-    user = request.user
-    if request.method == 'POST':
-        article = Article.objects.get(slug=slug)
-        profile = Profile.objects.get(user=user)
+# def BlogPostLike(request, slug):
+#     user = request.user
+#     if request.method == 'POST':
+#         article = Article.objects.get(slug=slug)
+#         profile = Profile.objects.get(user=user)
 
-        if profile in article.liked.all():
-            article.liked.remove(profile)
-        else:
-            article.liked.add(profile)
+#         if profile in article.liked.all():
+#             article.liked.remove(profile)
+#         else:
+#             article.liked.add(profile)
 
-        like, created = Like.objects.get_or_create(user=profile, slug=slug)
+#         like, created = Like.objects.get_or_create(user=profile, slug=slug)
 
-        if not created:
-            if like.value=='Like':
-                like.value='Unlike'
-            else:
-                like.value='Like'
-        else:
-            like.value='Like'
+#         if not created:
+#             if like.value=='Like':
+#                 like.value='Unlike'
+#             else:
+#                 like.value='Like'
+#         else:
+#             like.value='Like'
 
-            article.save()
-            like.save()
-    return redirect('blog:detail')
+#             article.save()
+#             like.save()
+#     return redirect('blog:detail')

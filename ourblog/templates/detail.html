@@ -13,13 +13,15 @@
       <!-- Author -->
       <p class="lead">
         
-        {{article.author.username}} Posted by
+        Posted by
+
+        {{article.author.username}} 
       </p>
 
       <hr>
 
       <!-- Date/Time -->
-      <p>{{article.created_date}}</p>
+      <p>{{article.pub_date}}</p>
 
       <hr>
 
@@ -42,7 +44,7 @@
       </p>
 
       <hr>
-      {% if user.is_authenticated %}
+      {% comment %} {% if user.is_authenticated %}
       <form action="{% url 'blog:article_like' article.slug %}" method="POST">
         {% csrf_token %}
 
@@ -55,14 +57,14 @@
     {% else %}
       <a class="btn btn-outline-info" href="{% url 'user:login' %}?next={{request.path}}">Log in to like this article!</a><br>
     {% endif %}
-    <strong class="text-secondary">{{ number_of_likes }} Like{{ number_of_likes|pluralize }}</strong>
+    <strong class="text-secondary">{{ number_of_likes }} Like{{ number_of_likes|pluralize }}</strong> {% endcomment %}
 
       <h4>comments {% if comments %}({{comments.count }}){% endif %}</h4>
       <hr>
       {% if comments %}
       {% for comment in comments  %}
         <div class="media mb-4">
-          <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+          <img class="d-flex mr-3 rounded-circle" src="{{article.article_image.url}}" alt="">
           <div class="media-body">
             <h5 class="mt-0">{{ comment.author}}</h5>
             {{comment.created_on}} <br>

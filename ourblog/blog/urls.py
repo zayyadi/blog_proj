@@ -18,6 +18,6 @@ urlpatterns=[
     path('tag/<slug:slug>/', views.tagged, name="tagged"),
     path('delete/<slug:slug>',views.deleteArticle,name = "delete"),
     path('',views.articles,name = "articles"),
-    path('article/<slug:slug>', views.BlogPostLike, name="article_like"),
+    # path('article/<slug:slug>', views.BlogPostLike, name="article_like"),
     path('comment/<slug:slug>',views.addComment,name = "comment"),
 ]
