@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Create a new Category{% endblock %}
+{% block body %}
+{% load crispy_forms_tags %}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+    {% if user.is_authenticated %}
+        <h3>Add category</h3>
+        <hr>
+        <form method = "post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{form.media}}
+            {{form|crispy}}
+            <br>
+            <button type = "submit" class = "btn btn-danger">Post</button>
+        </form>
+    </div>
+    {% else %}
+    You're not allowed here. Please go back to main page
+    {% endif %}
+</div>
+
+
+{% endblock body %}

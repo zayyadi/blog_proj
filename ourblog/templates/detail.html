@@ -27,14 +27,14 @@
 
       <!-- Preview Image -->
       {% if article.article_image %}
-      <img class="img-fluid rounded" src="{{article.article_image.url}}" alt="">
+      <img class="img-fluid rounded" src="{{blog.profile_image.url}}" alt="">
       {% endif %}
      
 
       <hr>
       <div style="display:flex" data-role="tagsinput">
           {% for tag in article.tags.all %}
-          <a href="{% url 'blog:tagged' tag.slug %}" class="mr-1 badge badge-info">#{{ tag }}</a>
+          <a href="{% url 'blog:article_tag' tag.slug %}" class="mr-1 badge badge-info">#{{ tag }}</a>
           {% endfor %}
       </div>
 
@@ -44,20 +44,7 @@
       </p>
 
       <hr>
-      {% comment %} {% if user.is_authenticated %}
-      <form action="{% url 'blog:article_like' article.slug %}" method="POST">
-        {% csrf_token %}
-
-        {% if post_is_liked %}
-        <button type="submit" name="blogpost_id" value="{{object.slug}}" class="btn btn-info">Unlike</button>
-        {% else %}
-        <button type="submit" name="blogpost_id" value="{{object.slug}}" class="btn btn-info">Like</button>
-        {% endif %}
-      </form>
-    {% else %}
-      <a class="btn btn-outline-info" href="{% url 'user:login' %}?next={{request.path}}">Log in to like this article!</a><br>
-    {% endif %}
-    <strong class="text-secondary">{{ number_of_likes }} Like{{ number_of_likes|pluralize }}</strong> {% endcomment %}
+      {% if user.is_authenticated %}
 
       <h4>comments {% if comments %}({{comments.count }}){% endif %}</h4>
       <hr>
@@ -66,9 +53,21 @@
         <div class="media mb-4">
           <img class="d-flex mr-3 rounded-circle" src="{{article.article_image.url}}" alt="">
           <div class="media-body">
-            <h5 class="mt-0">{{ comment.author}}</h5>
+            <h5 class="mt-0">{{ comment.authors.first_name }}</h5>
             {{comment.created_on}} <br>
             {{comment.body}}
+
+            {% comment %} {% for reply in comment.get_replies %}
+                <li class="reply">
+                <div class="reply-body">
+                    <h3>{{ reply.user.username }}</h3>
+                    <div class="meta mb-3">{{ reply.timestamp }}</div>
+                    <p>{{ reply.reply }}</p>
+                    #ToDo Create a view to add replies and hook the url to href below
+                    <p><a href="#" class="reply">Reply</a></p>
+                </div>
+                </li>
+            {% endfor %} {% endcomment %}
           </div>
         </div>
       {% endfor %}
@@ -79,16 +78,26 @@
         There are no comments for this article, be the first to comment!
       </div>
       {% endif %}
-
+      {% else %}
+      <a class="btn btn-outline-info" href="{% url 'account_login' %}?next={{request.path}}">Log in to comment on this article!</a><br>
+    {% endif %}
+    <br/><br/>
+    <hr>
+    <br/>
+    <form action="{% url 'blog:article_like' article.slug %}" method="POST">
+      {% csrf_token %}
+      <button type="submit" name="article_slug", value="{{ article.slug }}", class="btn btn-primary btn-sm">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+      </svg>
+      {{ article.total_likes }}
+      </button>
+    </form>
       <div class="card my-4 container">
           <h5 class="card-header">Add Comment:</h5>
           <div class="card-body">
             <form method = "post" action = "{% url 'blog:comment' article.slug %}">
               {% csrf_token %}
-              <div class="form-group">
-                  <label for="formGroupExampleInput">Name</label>
-                  <input name = "author" type="text" class="form-control" id="formGroupExampleInput" placeholder="Enter your Name">
-                </div>
               <div class="form-group">
                   <label for="formGroupExampleInput">Comment</label>
                 <textarea name = "body" class="form-control" rows="3"></textarea>
@@ -100,6 +109,18 @@
         </div>
         
       </div>
+      <br/>
+      <br/>
+      <hr>
+      <br/>
+      <h2>Similar posts</h2>
+      {% for post in similar_posts %}
+      <p>
+      <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+      </p>
+      {% empty %}
+      There are no similar posts yet.
+      {% endfor %}
 
       
 

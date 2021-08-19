@@ -1,39 +1,61 @@
 from django.shortcuts import render,redirect,get_object_or_404,reverse
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.models import User
-from .forms import CommentForm, ArticleForm
-from .models import Article, Comment, Like
-from user.models import Profile
+from .forms import CommentForm, ArticleForm, UserUpdateForm, ProfileUpdateForm
+from .models import Article, Comment, Category
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Count
 from django.template.defaultfilters import slugify
 from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 from taggit.models import Tag
+from django.views.generic import CreateView
+import random
 
 
-def articles(request, slug=None):
+class AddCategoryView(CreateView):
+    model = Category
+    template_name = 'addCategory.html'
+    fields = '__all__'
+
+def CategoryView(request, category):
+    category_post = Article.objects.filter(category=category)
+    return render(request, 'categories.html', {'category':category, 'category_post':category_post})
+
+def articles(request, slug=None, tag_slug=None):
     keyword = request.GET.get("keyword")
 
     if keyword:
         articles = Article.objects.filter(title__contains = keyword)
         return render(request,"articles.html",{"articles":articles})
     articles = Article.objects.all()
-    paginate_by = 5
-    
-    return render(request,"articles.html", {"articles": articles})
-    
-    
+    paginator = Paginator(articles, 10)
+    page = request.GET.get('page')
+    tag=None
+    try:
+        articles = paginator.page(page)
+    except PageNotAnInteger:
+        articles = paginator.page(1)
+    except EmptyPage:
+        articles = paginator.page(paginator.num_pages)
+    all_articles = list(Article.objects.all())
+    recent_articles = random.sample(all_articles, 3)
+    if tag_slug:
+        tag= get_object_or_404(Tag, slug=tag_slug)
+        articles = Article.objects.filter(tags__in=[tag])
 
-# def view_comment(request, slug):
-#     article = get_object_or_404(Article, slug=slug)
-#     comments = article.comments.all()
-#     common_tags = Article.tags.most_common()[:4]
+    context = {
+        "articles": articles,
+        "tag":tag,
+    }
     
-#     return render(request,"articles.html",{"article": article, "comments": comments, "common_tags": common_tags})
-    
+    return render(request,"articles.html", context)   
 
-    
+def LikeView(request, slug):
+    article = get_object_or_404(Article, slug=slug)
+    article.likes.add(request.user)
+    return redirect('blog:detail', article.slug)
+
 def about(request):
     return render(request,"about.html")
 
@@ -70,7 +92,10 @@ def detail(request,slug):
     #article = Article.objects.filter(id = id).first()   
     article = get_object_or_404(Article, slug=slug)
     comments = article.comments.all()
-    return render(request,"detail.html",{"article":article,"comments":comments })
+    article_tags= Article.tags.values_list('slug', flat=True)
+    similar_posts = Article.objects.filter(tags__in=article_tags).exclude(slug=article.slug)
+    similar_posts = similar_posts.annotate(same_tag=Count('tags')).order_by('-same_tag','-pub_date')[:3]
+    return render(request,"detail.html",{"article":article,"comments":comments, "similar_posts":similar_posts })
 
 
 @login_required(login_url = "allauth:account_login")
@@ -84,7 +109,7 @@ def updateArticle(request, slug):
         article.author = request.user
         article.save()
 
-        messages.success(request,"Makale başarıyla güncellendi")
+        messages.success(request,"Article has been Updated")
         return redirect("blog:dashboard")
     return render(request,"update.html",{"form":form})
 
@@ -100,52 +125,44 @@ def deleteArticle(request,slug):
     return redirect("blog:dashboard")
 def addComment(request,slug):
     post = get_object_or_404(Article, slug=slug)
-
+    
+    
     if request.method == "POST":
-        author = request.POST.get("author")
+        
         body = request.POST.get("body")
 
-        newComment = Comment(author  = author, body = body)
+        newComment = Comment( body=body)
 
         newComment.post = post
 
         newComment.save()
     return redirect(reverse("blog:detail",kwargs={"slug":slug}))
 
-def tagged(request, slug):
-    tag = get_object_or_404(Tag, slug=slug)
-    common_tags = Article.tags.most_common()[:4]
-    posts = Article.objects.filter(tags=tag)
+def tagged(request, tags):
+    # tag = get_object_or_404(Tag, slug=slug)
+    posts = Article.objects.filter(tags=tags)
+    return render(request, 'articles.html', {'tags':tags, 'posts':posts})
+
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = ProfileUpdateForm(request.POST,
+                                   request.FILES,
+                                   instance=request.user.profile)
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, f'Your account has been updated!')
+            return redirect('profile')
+
+    else:
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = ProfileUpdateForm(instance=request.user.profile)
+
     context = {
-        'tag':tag,
-        'common_tags':common_tags,
-        'posts':posts,
+        'u_form': u_form,
+        'p_form': p_form
     }
-    return render(request, 'articles.html', context)
 
-
-
-# def BlogPostLike(request, slug):
-#     user = request.user
-#     if request.method == 'POST':
-#         article = Article.objects.get(slug=slug)
-#         profile = Profile.objects.get(user=user)
-
-#         if profile in article.liked.all():
-#             article.liked.remove(profile)
-#         else:
-#             article.liked.add(profile)
-
-#         like, created = Like.objects.get_or_create(user=profile, slug=slug)
-
-#         if not created:
-#             if like.value=='Like':
-#                 like.value='Unlike'
-#             else:
-#                 like.value='Like'
-#         else:
-#             like.value='Like'
-
-#             article.save()
-#             like.save()
-#     return redirect('blog:detail')
+    return render(request, 'profile.html', context)
