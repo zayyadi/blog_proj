@@ -1,5 +1,5 @@
 
-from django.urls import path
+from django.urls import path, include
 
 from blog import views
 from .feeds import LatestPostsFeed, AtomSiteNewsFeed
@@ -23,4 +23,5 @@ urlpatterns=[
     path('add_catergory/', AddCategoryView.as_view(), name="add_category"),
     path('category/<str:category>/', views.CategoryView, name='category'),
     path('profile/', views.profile, name='profile'),
+    
 ]

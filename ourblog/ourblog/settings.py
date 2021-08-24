@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
     'django_extensions',
+    'webpush',
 ]
 
 INSTALLED_APPS += ('django_summernote', )
@@ -126,6 +127,8 @@ DATABASES = {
 }
 
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
@@ -147,6 +150,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+WEBPUSH_SETTINGS = {
+   "VAPID_PUBLIC_KEY": env("Public_Key"),
+   "VAPID_PRIVATE_KEY": env("Private_Key"),
+   "VAPID_ADMIN_EMAIL": "zayyadidris294@gmail.com",
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/

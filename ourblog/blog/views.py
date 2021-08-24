@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect,get_object_or_404,reverse
+from django.shortcuts import render,redirect,get_object_or_404
 from .forms import CommentForm, ArticleForm, UserUpdateForm, ProfileUpdateForm
 from .models import Article, Comment, Category
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -51,6 +51,7 @@ def articles(request, slug=None, tag_slug=None):
     
     return render(request,"articles.html", context)   
 
+
 def LikeView(request, slug):
     article = get_object_or_404(Article, slug=slug)
     article.likes.add(request.user)
@@ -91,11 +92,21 @@ def addArticle(request):
 def detail(request,slug):
     #article = Article.objects.filter(id = id).first()   
     article = get_object_or_404(Article, slug=slug)
+    all_article = list(Article.objects.exclude(slug=slug))
     comments = article.comments.all()
+    like_article = random.sample(all_article, 3)
+
     article_tags= Article.tags.values_list('slug', flat=True)
     similar_posts = Article.objects.filter(tags__in=article_tags).exclude(slug=article.slug)
-    similar_posts = similar_posts.annotate(same_tag=Count('tags')).order_by('-same_tag','-pub_date')[:3]
-    return render(request,"detail.html",{"article":article,"comments":comments, "similar_posts":similar_posts })
+    similar_posts = similar_posts.annotate(same_tags=Count('tags')).order_by('-same_tags','-pub_date')[:3]
+
+    context = {
+        "article":article,
+        "comments":comments, 
+        "similar_posts":similar_posts 
+    }
+
+    return render(request,"detail.html",context)
 
 
 @login_required(login_url = "allauth:account_login")
@@ -166,3 +177,5 @@ def profile(request):
     }
 
     return render(request, 'profile.html', context)
+
+
