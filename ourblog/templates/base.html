@@ -59,6 +59,7 @@
       .bd-placeholder-img-lg {
         font-size: 3.5rem;
       }
+      
     }
     </style>
   </style>
@@ -98,10 +99,11 @@
     {% block extra_body %}
     {% endblock %}
 
-    {% include "footer.html" %}
+    
     {% include "scripts.html" %}
 
     {% block extra_scripts %}
     {% endblock extra_scripts %}
+    {% include "footer.html" %}
     </body>
 </html>

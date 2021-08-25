@@ -29,7 +29,7 @@ def articles(request, slug=None, tag_slug=None):
         articles = Article.objects.filter(title__contains = keyword)
         return render(request,"articles.html",{"articles":articles})
     articles = Article.objects.all()
-    paginator = Paginator(articles, 10)
+    paginator = Paginator(articles, 5)
     page = request.GET.get('page')
     tag=None
     try:
@@ -43,13 +43,8 @@ def articles(request, slug=None, tag_slug=None):
     if tag_slug:
         tag= get_object_or_404(Tag, slug=tag_slug)
         articles = Article.objects.filter(tags__in=[tag])
-
-    context = {
-        "articles": articles,
-        "tag":tag,
-    }
     
-    return render(request,"articles.html", context)   
+    return render(request,"articles.html", {"articles": articles,"tag":tag})   
 
 
 def LikeView(request, slug):

@@ -12,8 +12,6 @@ cookieconsent.run({"notice_banner_type":"headline","consent_type":"express","pal
 
 <noscript>Cookie Consent by <a href="https://www.TermsFeed.com/" rel="nofollow noopener">TermsFeed Generator</a></noscript>
 <!-- End Cookie Consent -->
-
-
 <div class ="row">
     
         <div class="col-md-10 offset-md-3">
@@ -23,9 +21,6 @@ cookieconsent.run({"notice_banner_type":"headline","consent_type":"express","pal
                 </div>
         </div>
 </div>
- 
-
-
 
 {% if articles %}
 
@@ -40,68 +35,51 @@ cookieconsent.run({"notice_banner_type":"headline","consent_type":"express","pal
   {% endfor %}
   </p>
 
+    <article class="media content-section">
+      <div class="w3-col l8 s12">
+        <!-- Blog entry -->
+        <div class="w3-card-4 w3-margin w3-white">
+          <img style="height: 65px;width: 65px;margin-right: 16px;" class="rounded-circle article-img" src="{{ article.author.profile.image.url }}" >
+          <div class="media-body"> 
+            <div class="article-metadata"> 
+              <a href="{% url 'blog:detail' article.author.username %}"> {{ article.author }} </a>
+              <small class="text-muted">{{ article.article_date|date:"F d, Y" }}</small>
+            </div>
+            <h2><a class="article-title" href="{% url 'blog:detail' article.slug %}"> {{ article.title }}</a></h2>
+            <p class="article-content">{{ article.content | safe | truncatewords:50 }}</p>
+          </div>
 
-<article class="media content-section">
-  <div class="w3-col l8 s12">
-    <!-- Blog entry -->
-    <div class="w3-card-4 w3-margin w3-white">
-      <img class="rounded-circle article-img" src="{{blog.profile_image.url}}" >
-      <div class="pt-6 md:p-8 text-center md:text-left space-y-4">  
-        <h3 href="{% url 'blog:detail' article.slug %}"><b>{{article.title}}</b></h3>
-        <h5> {{article.author.username}} <span class="w3-opacity">{{article.pub_date}}</span></h5>
-      </div>
-
-    <div class="w3-container pb-2">
-      <p class="article-content">{{ article.content | safe | truncatewords:50 }}</p>
-      <div class="w3-row">
-        <div class="w3-col m8 s12">
-          <a href="{% url 'blog:detail' article.slug %}" class="btn btn-secondary"><b>READ MORE »</b></a>
-        </div>
-        <div class="w3-col m4 w3-hide-small">
-          <a href="{% url 'blog:comment' article.slug %}"><span class="w3-padding-large w3-right"><span class="w3-tag">{{ article.comments.count }}</span></span>
-          <i class="fa fa-comment" aria-hidden="true"></i>
-          </a>
+        <div class="w3-container pb-2">
+          
+          {% comment %} <div class="w3-row">
+            <div class="w3-col m8 s12">
+              <a href="{% url 'blog:detail' article.slug %}" class="btn btn-secondary"><b>READ MORE »</b></a>
+            </div>
+            <div class="w3-col m4 w3-hide-small">
+              <a href="{% url 'blog:comment' article.slug %}"><span class="w3-padding-large w3-right"><span class="w3-tag">{{ article.comments.count }}</span></span>
+              <i class="fa fa-comment" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div> {% endcomment %}
         </div>
       </div>
+      <hr>
+  {% endfor %}
+    {% else %}
+    <div class ="row">
+        
+        <div class="col-md-10 offset-md-3">
+            <div class="col-lg-8">
+    <div class = "alert alert-danger">
+      Article Not Found
     </div>
-  </div>
-  <hr>
-
-{% endfor %}
-
-
-{% else %}
-<div class ="row">
-    
-    <div class="col-md-10 offset-md-3">
-        <div class="col-lg-8">
-<div class = "alert alert-danger">
-   Article Not Found
-</div>
-</div>
-</div>
-</div>
-{% endif %}
-
-{% if users.has_other_pages %}
-  <ul class="pagination">
-    {% if users.has_previous %}
-      <li><a href="?page={{ users.previous_page_number }}">&laquo;</a></li>
-    {% else %}
-      <li class="disabled"><span>&laquo;</span></li>
+    </div>
+    </div>
+    </div>
     {% endif %}
-    {% for i in users.paginator.page_range %}
-      {% if users.number == i %}
-        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-      {% else %}
-        <li><a href="?page={{ i }}">{{ i }}</a></li>
-      {% endif %}
-    {% endfor %}
-    {% if users.has_next %}
-      <li><a href="?page={{ users.next_page_number }}">&raquo;</a></li>
-    {% else %}
-      <li class="disabled"><span>&raquo;</span></li>
-    {% endif %}
-  </ul>
-{% endif %}
+    <br>
+    <br>
+    <br />
+    <h3 class="text-center">{% include 'pagination.html' with page=articles %}</h3>
+
 {% endblock body %}
