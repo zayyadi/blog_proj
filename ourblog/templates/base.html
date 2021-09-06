@@ -4,12 +4,10 @@
 
 <html lang="en">
 <head>
-    <meta charset="utf-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>{% block head_title %}{{ title }}{% endblock %}</title>
-  {% block extra_head %}
-  {% endblock %}
+  <title>ZeeBLOG - {% block title %}{% endblock title %}</title>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
   <link
     rel="stylesheet"
@@ -19,6 +17,9 @@
   <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
   <link href="{% static 'css/header.css' %}" rel="stylesheet">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/monokai-sublime.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
   <style type="text/css">
     html,
     body,
@@ -61,17 +62,23 @@
       }
       
     }
-    </style>
   </style>
 </head>
 
-{% include 'navbar.html' %}    
-{% comment %} {% include 'sidebar.html' %} {% endcomment %}
+{% include 'navbar.html' %}   
+<form class="d-flex" action="/">
+  <input class="form-control mr-0" type="search" value="{{request.GET.q}}" name="q" placeholder="Search" aria-label="Search">
+  <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+</form>
+<main class="container my-3">
+        
+  <h2 class="my-3">
+    {% if request.GET.q is not null %}
+      Search Results for "{{ request.GET.q }}"
+    {% endif %}
+  </h2>
+</main>
 <body class="w3-light-grey">  
-        
-   
-        
-
     <div style = "margin-top : 100px; margin-bottom:100px;" class = "container">
             
         {% if messages %}
@@ -93,11 +100,9 @@
         {% endblock body %}
 
     </div>
-    {% block content %}
-    {% endblock content %}
 
     {% block extra_body %}
-    {% endblock %}
+    {% endblock extra_body%}
 
     
     {% include "scripts.html" %}
@@ -105,5 +110,5 @@
     {% block extra_scripts %}
     {% endblock extra_scripts %}
     {% include "footer.html" %}
-    </body>
+  </body>
 </html>

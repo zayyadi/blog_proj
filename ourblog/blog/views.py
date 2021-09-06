@@ -6,10 +6,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Count
 from django.template.defaultfilters import slugify
-from django.db.models import Count
+from django.urls import reverse
+from django.db.models import Count,Q
 from django.contrib.auth.decorators import login_required
 from taggit.models import Tag
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DetailView
 import random
 
 
@@ -23,11 +24,6 @@ def CategoryView(request, category):
     return render(request, 'categories.html', {'category':category, 'category_post':category_post})
 
 def articles(request, slug=None, tag_slug=None):
-    keyword = request.GET.get("keyword")
-
-    if keyword:
-        articles = Article.objects.filter(title__contains = keyword)
-        return render(request,"articles.html",{"articles":articles})
     articles = Article.objects.all()
     paginator = Paginator(articles, 5)
     page = request.GET.get('page')
@@ -38,13 +34,22 @@ def articles(request, slug=None, tag_slug=None):
         articles = paginator.page(1)
     except EmptyPage:
         articles = paginator.page(paginator.num_pages)
-    all_articles = list(Article.objects.all())
-    recent_articles = random.sample(all_articles, 3)
+
     if tag_slug:
         tag= get_object_or_404(Tag, slug=tag_slug)
         articles = Article.objects.filter(tags__in=[tag])
+
+    query = request.GET.get("q")
+    if query:
+        articles=Article.objects.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
+
+    context = {
+        "articles": articles,
+        "tag":tag,
+        "page":page,
+        }
     
-    return render(request,"articles.html", {"articles": articles,"tag":tag})   
+    return render(request,"articles.html", context)   
 
 
 def LikeView(request, slug):
@@ -83,21 +88,37 @@ def addArticle(request):
     }
     return render(request,"addarticle.html",context)
 
-
-def detail(request,slug):
+class ArticleDetail(DetailView):
+    model = Article
+    context_object_name = "article"
+    template_name = "post_detail.html"
+def detail(request,post):
     #article = Article.objects.filter(id = id).first()   
-    article = get_object_or_404(Article, slug=slug)
-    all_article = list(Article.objects.exclude(slug=slug))
-    comments = article.comments.all()
-    like_article = random.sample(all_article, 3)
-
-    article_tags= Article.tags.values_list('slug', flat=True)
-    similar_posts = Article.objects.filter(tags__in=article_tags).exclude(slug=article.slug)
+    article = get_object_or_404(Article, slug=post)
+    # all_article = list(Article.objects.exclude(slug=post))
+    # comments = article.comments.all()
+    article_tags= Article.tags.values_list('id', flat=True)
+    similar_posts = Article.objects.filter(tags__in=article_tags).exclude(id=article.id)
     similar_posts = similar_posts.annotate(same_tags=Count('tags')).order_by('-same_tags','-pub_date')[:3]
+    comments = article.comments.filter(active=True)
+    new_comment = None
 
+    if request.method == 'POST':
+        # A comment was posted
+        comment_form = CommentForm(data=request.POST)
+        if comment_form.is_valid():
+            # Create Comment object but don't save to database yet
+            new_comment = comment_form.save(commit=False)
+            # Assign the current post to the comment
+            new_comment.post = article
+            new_comment.save()
+            return redirect(article.get_absolute_url()+'#'+str(new_comment.id))
+    else:
+        comment_form = CommentForm()
     context = {
         "article":article,
-        "comments":comments, 
+        "comments":comments,
+        "comment_form":comment_form, 
         "similar_posts":similar_posts 
     }
 
@@ -126,23 +147,53 @@ def deleteArticle(request,slug):
 
     article.delete()
 
-    messages.success(request,"Makale Başarıyla Silindi")
+    messages.success(request,"Article Deleted Successfully")
 
     return redirect("blog:dashboard")
-def addComment(request,slug):
-    post = get_object_or_404(Article, slug=slug)
+# def addComment(request,slug):
+#     post = get_object_or_404(Article, slug=slug)
+#     comments = post.comments.filter(active=True)
+#     new_comment = None
     
     
+#     if request.method == "POST":
+#         comment_form = CommentForm(data=request.POST)
+#         if comment_form.is_valid():
+#             new_comment = comment_form.save(commit=False)
+#             # Assign the current post to the comment
+#             new_comment.post = post
+#             # Save the comment to the database
+#             new_comment.save()
+#             return redirect(post.get_absolute_url()+'#'+str(new_comment.id))
+#     else:
+#         comment_form = CommentForm()
+
+def reply_page(request):
     if request.method == "POST":
+
+        form = CommentForm(request.POST)
         
-        body = request.POST.get("body")
+        # print(form)
 
-        newComment = Comment( body=body)
+        if form.is_valid():
+            post_id = request.POST.get('post_id')  # from hidden input
+            parent_id = request.POST.get('parent')  # from hidden input
+            article_url = request.POST.get('article_url')  # from hidden input
 
-        newComment.post = post
+            print(post_id)
+            print(parent_id)
+            print(article_url)
 
-        newComment.save()
-    return redirect(reverse("blog:detail",kwargs={"slug":slug}))
+
+            reply = form.save(commit=False)
+    
+            reply.post = Article(id=post_id)
+            reply.parent = Comment(id=parent_id)
+            reply.save()
+
+            return redirect(article_url+'#'+str(reply.id))
+
+    return redirect("/")
 
 def tagged(request, tags):
     # tag = get_object_or_404(Tag, slug=slug)
@@ -160,7 +211,7 @@ def profile(request):
             u_form.save()
             p_form.save()
             messages.success(request, f'Your account has been updated!')
-            return redirect('profile')
+            return redirect('blog:profile')
 
     else:
         u_form = UserUpdateForm(instance=request.user)

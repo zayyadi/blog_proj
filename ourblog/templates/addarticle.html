@@ -3,6 +3,8 @@
 {% block title %}Create a new Article{% endblock %}
 {% block body %}
 {% load crispy_forms_tags %}
+{% if user.is_authenticated %}
+{% if user.is_admin %}
 
 <div class="row">
     <div class="col-md-6 offset-md-3">
@@ -16,7 +18,14 @@
             <button type = "submit" class = "btn btn-danger">Post</button>
         </form>
     </div>
-  </div>
+</div>
+<script>
+    var name = "{{ user.id }}";
+    document.getElementById("zayyad").value = name;
+</script>
 
+{% else %}
+You are not allowed on this page
+{% endif %}
 
 {% endblock body %}

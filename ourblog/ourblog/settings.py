@@ -14,6 +14,8 @@ from pathlib import Path
 import os
 
 import environ
+import cloudinary
+import cloudinary_storage
 
 # Initialise environment variables
 env = environ.Env()
@@ -31,7 +33,7 @@ SECRET_KEY = 'wt&d2y)^fpwkhhvzdxtostzyz+qm#xbsj=6==m2k9uv2eep2je'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['75e8de10585d.ngrok.io', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['75e8de10585d.ngrok.io', '127.0.0.1', 'localhost',]
 
 
 # Application definition
@@ -180,7 +182,6 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'

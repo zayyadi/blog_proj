@@ -24,7 +24,7 @@ cookieconsent.run({"notice_banner_type":"headline","consent_type":"express","pal
 
 {% if articles %}
 
-{% for article in articles %}
+{% for post in articles %}
 
   <p> Tags:
 
@@ -35,7 +35,7 @@ cookieconsent.run({"notice_banner_type":"headline","consent_type":"express","pal
   {% endfor %}
   </p>
 
-    <article class="media content-section">
+    {% comment %} <article class="media content-section">
       <div class="w3-col l8 s12">
         <!-- Blog entry -->
         <div class="w3-card-4 w3-margin w3-white">
@@ -48,35 +48,59 @@ cookieconsent.run({"notice_banner_type":"headline","consent_type":"express","pal
             <h2><a class="article-title" href="{% url 'blog:detail' article.slug %}"> {{ article.title }}</a></h2>
             <p class="article-content">{{ article.content | safe | truncatewords:50 }}</p>
           </div>
-
-        <div class="w3-container pb-2">
-          
-          {% comment %} <div class="w3-row">
-            <div class="w3-col m8 s12">
-              <a href="{% url 'blog:detail' article.slug %}" class="btn btn-secondary"><b>READ MORE »</b></a>
-            </div>
-            <div class="w3-col m4 w3-hide-small">
-              <a href="{% url 'blog:comment' article.slug %}"><span class="w3-padding-large w3-right"><span class="w3-tag">{{ article.comments.count }}</span></span>
-              <i class="fa fa-comment" aria-hidden="true"></i>
-              </a>
-            </div>
-          </div> {% endcomment %}
         </div>
       </div>
-      <hr>
-  {% endfor %}
-    {% else %}
-    <div class ="row">
-        
-        <div class="col-md-10 offset-md-3">
-            <div class="col-lg-8">
-    <div class = "alert alert-danger">
-      Article Not Found
+      <hr> {% endcomment %}
+
+    
+  <div class="card mb-3">
+    <div class="card-body">
+        <div class="row g-0">
+            <div class="col-md-5">
+                <div class="ratio ratio-16x9">
+                    <img src="{{ post.image.url }}" class="rounded featured-image-list" alt="{{post.title}}">
+                </div>
+            </div>
+            <div class="col-md-7 ps-md-3 pt-3 pt-md-0 d-flex flex-column">
+
+                <h2 class="card-title h5">
+                    <a href="{{ post.get_absolute_url }}">
+                        {{ post.title }}
+                    </a>
+                </h2>
+
+                <div class="text-muted">
+                    <small>
+                        Published {{ post.publish.date }} by <strong>{{ post.author }}</strong>
+                    </small>
+                </div>
+
+
+                <p class="card-text mb-auto py-2">{{ post.snippet }}</p>
+
+
+                <div>
+                    <a href="{{ post.get_absolute_url }}" class="btn btn-primary btn-sm">Read more</a>
+                </div>
+
+            </div>
+        </div>
     </div>
+</div>
+
+{% endfor %}
+{% else %}
+  <div class ="row">
+      
+    <div class="col-md-10 offset-md-3">
+      <div class="col-lg-8">
+        <div class = "alert alert-danger">
+          Article Not Found
+        </div>
+      </div>
     </div>
-    </div>
-    </div>
-    {% endif %}
+  </div>
+{% endif %}
     <br>
     <br>
     <br />

@@ -1,6 +1,6 @@
   
 {% extends "base.html" %}
-
+{% load crispy_forms_tags %}
 {% block body %}
 <div class="row">
 
@@ -37,15 +37,13 @@
           <a href="{% url 'blog:article_tag' tag.slug %}" class="mr-1 badge badge-info">#{{ tag }}</a>
           {% endfor %}
       </div>
-
-      <!-- Post Content -->
       <p class="lead">
           {{article.content|safe}}
       </p>
 
       <hr>
-      {% if user.is_authenticated %}
-
+    </div>
+      {% comment %} {% if user.is_authenticated %}
       <h4>comments {% if comments %}({{comments.count }}){% endif %}</h4>
       <hr>
       {% if comments %}
@@ -53,13 +51,14 @@
         <div class="media mb-4">
           <img class="d-flex mr-3 rounded-circle" src="{{article.article_image.url}}" alt="">
           <div class="media-body">
-            <h5 class="mt-0">{{ comment.authors.first_name }}</h5>
+            <h5 class="mt-0">{{ comment.author.first_name }}</h5>
             {{comment.created_on}} <br>
             {{comment.body}}
           </div>
         </div>
       {% endfor %}
-      
+      <hr />
+      <br />
       
       {% else %}
       <div class ="alert alert-danger">
@@ -69,7 +68,8 @@
       {% else %}
       <a class="btn btn-outline-info" href="{% url 'account_login' %}?next={{request.path}}">Log in to comment on this article!</a><br>
     {% endif %}
-    <br/><br/>
+     {% endcomment %}
+     <br/><br/>
     <hr>
     <br/>
     {% if user.is_authenticated %}
@@ -85,53 +85,24 @@
     {% else %}
       <a class="btn btn-outline-info" href="{% url 'account_login' %}?next={{request.path}}">Log in to Like this article!</a><br>
     {% endif %}
-
-      <div class="row">
-        <div class="col-lg-4 cpl-md-6 col-sl-12 p-3">
-          <div class="border rounded">
-            <small class="text-primary mt-2 p-4">Post Title</small>
-            <p class="p-4"> this article is just a test of the similar post i am implementing on this site</p>
-            <a href="#" class="p-4">Read More<i class="mdi mdi-chevron-right"></i></a>
-            <div class="border-top p-3 mt-3 d-flex">
-              <img src="http://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png" alt"" style="max-width:50px;max-height:50px;" class="rounded-pill img-fluid mr-3">
-              <div class="form-inline">
-                <div class="form-group">
-                  <h6> Author's Name</h6>
-                </div>
-                <div class="form-group ml-5">
-                  <small>10 oct 2022</small>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="card my-4 container">
-          <h5 class="card-header">Add Comment:</h5>
-          <div class="card-body">
-            <form method = "post" action = "{% url 'blog:comment' article.slug %}">
-              {% csrf_token %}
-              <div class="form-group">
-                  <label for="formGroupExampleInput">Comment</label>
-                <textarea name = "body" class="form-control" rows="3"></textarea>
-              </div>
-              <button type="submit" class="btn btn-danger my-3">comment</button>
-            </form>
-          </div>
-        </div>
-        </div>
-        
-      </div>
+    <hr />
+      {% include 'addComment.html' %}
       <br>
-      <h2> Most Liked Posts</h2>
-      {% for post in like_article %}
-      <a href="{{ post.get_absolute_url }}"><h5>{{post.title}}</h5></a>
-      {% endfor %}
+      {% with comments.count as total_comments %}
+      <h3 class="mt-5">
+          {{ total_comments }} comment{{ total_comments|pluralize }}
+      </h3>
+      {% endwith %}
       <br />
       <br/>
       <br/>
       <hr>
+      {% for comment in article.get_comments %}
+      {% include 'comment.html' with comment=comment %}
+      {% endfor %}
+      <hr />
       <br/>
+      <div class="card my-4 container">
       <h2>Similar posts</h2>
       {% for post in similar_posts %}
       <p>
@@ -140,6 +111,7 @@
       {% empty %}
       There are no similar posts yet.
       {% endfor %}
+      </div>
 
       
 
