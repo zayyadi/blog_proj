@@ -1,6 +1,9 @@
+
 from django.contrib.sitemaps import Sitemap
-from .models import Article
 from django.urls import reverse
+
+from .models import Article
+
 
 class PostSitemap(Sitemap):
     changefreq = "weekly"

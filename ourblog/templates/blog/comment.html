@@ -1,0 +1,76 @@
+<div class="border-0 border-start border-2 ps-2" id="{{comment.id}}">
+
+        <div class="mt-3">
+            <strong>{{comment.name}}</strong> 
+            {% if  comment.parent.name%} to <strong>{{comment.parent.name}}</strong>{% endif %}
+            <small class="text-muted">On {{ comment.created.date }}</small>
+        </div>
+        <div class="border p-2 rounded">
+            <p>{{comment.body}}</p>
+            <button class="btn btn-primary btn-sm" onclick="handleReply({{comment.id}})">Reply</button>
+        
+            <div id="reply-form-container-{{comment.id}}" style="display:none">
+            
+                <form method="post" action="{% url 'blog:reply' %}" class="mt-3">
+                    {% csrf_token %}
+                    <input type="hidden" name="post_id" value="{{post.id}}">
+                    <input type="hidden" name="parent" value="{{comment.id}}">
+                    <input type="hidden" name="post_url" value="{{post.get_absolute_url}}">
+
+
+                    {{comment_form.as_p}}
+
+                    <div>
+                        <button type="button" onclick="handleCancel({{comment.id}})" class="btn btn-light border btn-sm">Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% for comment in comment.get_comments %}
+            {% include 'comment.html' with comment=comment %}
+        {% endfor %}
+</div>
+
+
+{% extends "base.html" %}
+
+{% block title %}
+{{post.title}}
+{% endblock %}
+
+{% block content %}
+
+      <div class="container">
+        <div class="row justify-content-md-center pt-5">
+          <div class="col-7"><h1>{{post.title}}</h1></div>
+          <div class="col-7"><p>{{post.content|safe}}</p></div>
+          <div class="col-md-7">
+              {% with comments.count as total_comments %}
+              <h2>
+              {{ total_comments }} comment{{ total_comments|pluralize }}
+              </h2>
+              {% endwith %}
+              {% for comment in comments %}
+                Comment {{ forloop.counter }} by {{ comment.name }}
+                on {{ comment.publish }}
+                {{ comment.content|linebreaks }}
+              {% empty %}
+                <p>There are no comments for this post.</p>
+              {% endfor %}
+                <h2>Make a new comment</h2>
+
+              <form id="myForm" method="post">
+              {{ comment_form.as_p }}
+              {% csrf_token %}
+              <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>
+              </form>
+
+          </div>
+        </div>
+      </div>
+      <script>
+      $('#myForm').trigger("reset");
+      </script>
+
+{% endblock %}

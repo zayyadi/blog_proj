@@ -1,12 +1,13 @@
-
 from django.contrib import admin
-from .models import Article, Comment, Category, Profile
-
 from django_summernote.admin import SummernoteModelAdmin
+from mptt.admin import MPTTModelAdmin
+
+from .models import Article, Category, Comment
+
 
 class PostAdmin(SummernoteModelAdmin):
-    list_display = ('title', 'author', 'status', 'pub_date')
-    list_filter = ('status', 'pub_date')
+    list_display = ('title', 'author', 'status', 'publish')
+    list_filter = ('status', 'publish')
     search_fields = ['title', 'content']
 
     summernote_fields = ('content',)
@@ -25,5 +26,4 @@ class PostAdmin(SummernoteModelAdmin):
 
 admin.site.register(Article, PostAdmin)
 admin.site.register(Category)
-admin.site.register(Comment)
-admin.site.register(Profile)
+admin.site.register(Comment, MPTTModelAdmin)

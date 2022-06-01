@@ -1,0 +1,564 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<!-- Cookie Consent by https://www.TermsFeed.com -->
+<script type="text/javascript" src="//www.termsfeed.com/public/cookie-consent/4.0.0/cookie-consent.js" charset="UTF-8"></script>
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({"notice_banner_type":"headline","consent_type":"express","palette":"dark","language":"en","page_load_consent_levels":["strictly-necessary"],"notice_banner_reject_button_hide":false,"preferences_center_close_button_hide":false,"website_name":"Ourblog","open_preferences_center_selector":"#cookies_center"});
+});
+</script>
+
+<noscript>Cookie Consent by <a href="https://www.TermsFeed.com/" rel="nofollow noopener">TermsFeed Generator</a></noscript>
+<!-- End Cookie Consent -->
+<div class ="row">
+    
+        <div class="col-md-10 offset-md-3">
+            <div class="col-lg-8">
+                <h1>Articles</h1>
+                <hr>
+                </div>
+        </div>
+</div>
+
+{% if articles %}
+
+{% for post in articles %}
+
+  <p> Tags:
+
+
+  {% for tag in article.tags.all %}
+      <a href="{% url 'blog:article_tag' tag.slug %}" class="badge badge-success">{{ tag.name }}</a>
+  {% if not forloop.last %},{% endif %}
+  {% endfor %}
+  </p>
+
+<main class="my-5">
+    <div class="container">
+      <!--Section: News of the day-->
+      <section class="border-bottom pb-4 mb-5">
+        <div class="row gx-5">
+          <div class="col-md-6 mb-4">
+            <div class="bg-image hover-overlay ripple shadow-2-strong" data-mdb-ripple-color="light">
+              <img src="{{post.image.url}}" class="img-fluid" alt="{{post.title}}"/>
+              <a href="{% url 'blog:detail' article.slug %}">
+                <div class="mask" style="background-color: rgba(255, 251, 255, 0.15);"></div>
+              </a>
+            </div>
+          </div>
+
+          <div class="col-md-6 mb-4">
+            <span class="badge bg-danger px-2 py-1 shadow-1-strong mb-3">{{ post.author }}</span>
+            <h4><strong>{{post.title}}</strong></h4>
+            <p class="text-muted">
+              {{post.snippet}}
+            </p>
+            <button type="button" class="btn btn-primary"><a href="{% url 'blog:detail' article.slug %}">Read more</a></button>
+          </div>
+        </div>
+      </section>
+{% endfor %}
+{% else %}
+  <div class ="row">
+      
+    <div class="col-md-10 offset-md-3">
+      <div class="col-lg-8">
+        <div class = "alert alert-danger">
+          Article Not Found
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+    <br>
+    <br>
+    <br />
+    <h3 class="text-center">{% include 'pagination.html' with page=articles %}</h3>
+
+{% endblock body %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<--base.html dump-->
+{% load static %}
+{% load social_share %}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>ZeeBLOG - {% block title %}{% endblock title %}</title>
+  {% include 'links.html' %}
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+{% include 'navbar.html' %} 
+<br /><br />
+<main class="container my-3">
+        
+</main>
+<body class="w3-light-grey">  
+    <div style = "margin-top : 100px; margin-bottom:100px;" class = "container">
+            
+        {% if messages %}
+            
+            {% for message in messages %}
+            {% if message.tags == "info" %}
+            <div class="alert alert-danger">{{ message }}</div>
+            {% else %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+
+            {% endif %}
+
+
+            {% endfor %}
+            
+        {% endif %}
+        {% block body %}
+        
+        {% endblock body %}
+
+    </div>
+    {% include "scripts.html" %}
+
+    {% block extra_scripts %}
+    {% endblock extra_scripts %}
+    <hr class="m-0" />
+
+    
+    {% include "footer.html" %}
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+{% comment %} <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="home" viewBox="0 0 16 16">
+    <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z"/>
+  </symbol>
+  <symbol id="speedometer2" viewBox="0 0 16 16">
+    <path d="M8 4a.5.5 0 0 1 .5.5V6a.5.5 0 0 1-1 0V4.5A.5.5 0 0 1 8 4zM3.732 5.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707zM2 10a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 10zm9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5zm.754-4.246a.389.389 0 0 0-.527-.02L7.547 9.31a.91.91 0 1 0 1.302 1.258l3.434-4.297a.389.389 0 0 0-.029-.518z"/>
+    <path fill-rule="evenodd" d="M0 10a8 8 0 1 1 15.547 2.661c-.442 1.253-1.845 1.602-2.932 1.25C11.309 13.488 9.475 13 8 13c-1.474 0-3.31.488-4.615.911-1.087.352-2.49.003-2.932-1.25A7.988 7.988 0 0 1 0 10zm8-7a7 7 0 0 0-6.603 9.329c.203.575.923.876 1.68.63C4.397 12.533 6.358 12 8 12s3.604.532 4.923.96c.757.245 1.477-.056 1.68-.631A7 7 0 0 0 8 3z"/>
+  </symbol>
+  <symbol id="table" viewBox="0 0 16 16">
+    <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm15 2h-4v3h4V4zm0 4h-4v3h4V8zm0 4h-4v3h3a1 1 0 0 0 1-1v-2zm-5 3v-3H6v3h4zm-5 0v-3H1v2a1 1 0 0 0 1 1h3zm-4-4h4V8H1v3zm0-4h4V4H1v3zm5-3v3h4V4H6zm4 4H6v3h4V8z"/>
+  </symbol>
+  <symbol id="grid" viewBox="0 0 16 16">
+    <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z"/>
+  </symbol>
+  <symbol id="people-circle" viewBox="0 0 16 16">
+    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+  </symbol>
+</svg>
+
+<header>
+    <div class="px-3 py-2 bg-dark text-white">
+      <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+          <a href="{% url 'blog:articles' %}" class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none">
+            <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg>
+          </a>
+        
+          <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
+            <li>
+              <a href="{% url 'blog:articles' %}" class="nav-link text-secondary">
+                <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#home"/></svg>
+                Home
+              </a>
+            </li>
+        {% if user.is_authenticated %}
+            <li>
+              <a href="{% url 'blog:dashboard' %}" class="nav-link text-white">
+                <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#speedometer2"/></svg>
+                Dashboard
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'blog:addarticle' %}" class="nav-link text-white">
+                <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#table"/></svg>
+                Add Article
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'blog:add_category' %}" class="nav-link text-white">
+                <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#grid"/></svg>
+                Add Category
+              </a>
+            </li>
+            <li>
+              {% for category in category.all %}
+              <a href="{% url 'blog:category' category.slug %}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ category }} <span class="caret"></span></a>
+              {% endfor %}
+            </li>
+            <li>
+              <a href="{% url 'blog:profile' %}" class="nav-link text-white">
+                <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#people-circle"/></svg>
+                Profile
+              </a>
+            </li>
+             <li>
+              <a href="{% url 'users:logout' %}" class="nav-link text-white">
+                Logout
+              </a>
+            </li>
+        {% else %}
+            <li>
+              <a href="{% url 'users:register' %}" class="nav-link text-white">
+                Register
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'users:login' %}" class="nav-link text-white">
+                Login
+              </a>
+            </li>
+          </ul>
+        {% endif %}
+        </div>
+      </div>
+    </div>
+</header> {% endcomment %}
+
+<nav class="navbar navbar-toggleable-md navbar-light bg-white fixed-top mediumnavigation">
+  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+  <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="container">
+    <!-- Begin Logo -->
+    <a class="navbar-brand" href="{% url 'blog:articles' %}">
+    <img src="{% static 'images/logo.png'%}" alt="logo">
+    </a>
+    <!-- End Logo -->
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+      <!-- Begin Menu -->
+      <ul class="navbar-nav ml-auto">
+        {% if user.is_authenticated %}
+        <li class="nav-item active">
+        <a class="nav-link" href="{% url 'blog:dashboard' %}">Dashobard </a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" href="post.html">Post</a>
+        </li>
+        <li>
+          <a href="{% url 'blog:addarticle' %}" class="nav-link">
+            Add Article
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'blog:add_category' %}" class="nav-link text-white">
+            Add Category
+          </a>
+        </li>
+        <li>
+          {% for category in category.all %}
+          <a href="{% url 'blog:category' category.slug %}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ category }} <span class="caret"></span></a>
+          {% endfor %}
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" href="{% url 'users:profile'%}">Profile</a>
+        </li>
+        <li>
+          <a href="{% url 'users:logout' %}" class="nav-link">
+            Logout
+          </a>
+        </li>
+        {% else %}
+        <li>
+          <a href="{% url 'users:register' %}" class="nav-link">
+            Register
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'users:login' %}" class="nav-link">
+            Login
+          </a>
+        </li>
+      </ul>
+      {% endif %}
+      <!-- End Menu -->
+      <!-- Begin Search -->
+      <form class="form-inline my-2 my-lg-0" action="/search/" method="get">
+        <input class="form-control mr-sm-2" type="text" placeholder="Search">
+        <span class="search-icon"><svg class="svgIcon-use" width="25" height="25" viewbox="0 0 25 25"><path d="M20.067 18.933l-4.157-4.157a6 6 0 1 0-.884.884l4.157 4.157a.624.624 0 1 0 .884-.884zM6.5 11c0-2.62 2.13-4.75 4.75-4.75S16 8.38 16 11s-2.13 4.75-4.75 4.75S6.5 13.62 6.5 11z"></path></svg></span>
+      </form>
+      <!-- End Search -->
+    </div>
+  </div>
+  </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Cookie Consent by https://www.TermsFeed.com -->
+<script type="text/javascript" src="//www.termsfeed.com/public/cookie-consent/4.0.0/cookie-consent.js" charset="UTF-8"></script>
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({"notice_banner_type":"headline","consent_type":"express","palette":"dark","language":"en","page_load_consent_levels":["strictly-necessary"],"notice_banner_reject_button_hide":false,"preferences_center_close_button_hide":false,"website_name":"Ourblog","open_preferences_center_selector":"#cookies_center"});
+});
+</script>
+
+<noscript>Cookie Consent by <a href="https://www.TermsFeed.com/" rel="nofollow noopener">TermsFeed Generator</a></noscript>
+<!-- End Cookie Consent -->
+<div class ="row">
+    
+        <div class="col-md-10 offset-md-3">
+            <div class="col-lg-8">
+                <h1>Articles</h1>
+                <hr>
+                </div>
+        </div>
+</div>
+
+{% if articles %}
+
+{% for post in articles %}
+
+  <p> Tags:
+
+
+  {% for tag in article.tags.all %}
+      <a href="{% url 'blog:article_tag' tag.slug %}" class="badge badge-success">{{ tag.name }}</a>
+  {% if not forloop.last %},{% endif %}
+  {% endfor %}
+  </p>
+
+  <div class="card mb-3">
+    <div class="card-body">
+        <div class="row g-0">
+            <div class="col-md-5">
+                <div class="ratio ratio-16x9">
+                    <img src="{{ post.image.url }}" class="rounded featured-image-list" alt="{{post.title}}">
+                </div>
+            </div>
+            <div class="col-md-7 ps-md-3 pt-3 pt-md-0 d-flex flex-column">
+
+                <h2 class="card-title h5">
+                    <a href="{{ post.get_absolute_url }}">
+                        {{ post.title }}
+                    </a>
+                </h2>
+
+                <div class="text-muted">
+                    <small>
+                        Published {{ post.publish.date }} by <strong>{{ post.author }}</strong>
+                    </small>
+                </div>
+
+
+                <p class="card-text mb-auto py-2">{{ post.snippet }}</p>
+
+
+                <div>
+                    <a href="{{ post.get_absolute_url }}" class="btn btn-primary btn-sm">Read more</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endfor %}
+{% else %}
+  <div class ="row">
+      
+    <div class="col-md-10 offset-md-3">
+      <div class="col-lg-8">
+        <div class = "alert alert-danger">
+          Article Not Found
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+    <br>
+    <br>
+    <br />
+    <h3 class="text-center">{% include 'pagination.html' with page=articles %}</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+{% extends "base.html" %}
+{% load social_share %}
+{% load crispy_forms_tags %}
+{% block title %} {{ article.title }} {% endblock title %}
+{% block body %}
+
+<style>
+  @media screen and (min-width: 600px) {
+    .children form {
+      margin-left: -48px;
+      /* will touch very left side */
+    }
+
+    .children .children form {
+      margin-left: -96px;
+      /* will touch very left side */
+    }
+  }
+</style>
+
+<div class="container">
+  <div class="row justify-content-md-center pt-5">
+
+    <div class="col-md-7">
+      <h1>{{article.title}}</h1>
+    </div>
+    <div class="col-md-9"><img class="card-img-top" src="{{article.image.url}}" alt="{{ article.title }}"></div>
+    <div class="col-md-7">
+      <p>{{article.content|safe}}</p>
+    </div>
+    <div class="col-md-7">
+
+      {% with comments.count as total_comments %}
+      <h2>
+        {{ total_comments }} comment{{ total_comments|pluralize }}
+      </h2>
+      {% endwith %}
+
+      {% load mptt_tags %}
+
+      <div>
+        {% recursetree comments %}
+        <div id="{{ node.id }}" class="my-2 p-2" style="border: 1px solid grey">
+          <div class="d-flex justify-content-between">By {{ node.name }}<div></div>{{ node.publish }}</div>
+          <div>{{ node.body }}</div>
+          <hr />
+          {% if node.level < 3 %}
+          <button class="button" onclick="myFunction({{ node.id }})">Reply</button>
+          {% endif %}
+        </div>
+        {% if not node.is_leaf_node %}
+        <div class="children pl-2 pl-md-5">
+          {{ children }}
+        </div>
+        {% endif %}
+        {% endrecursetree %}
+      </div>
+
+      <div class="py-4">
+        <nav aria-label="Page navigation example">
+          {% if comments.has_other_pages %}
+          <ul class="pagination">
+            {% if comments.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ comments.previous_page_number }}">Previous</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+            {% endif %}
+            {% for num in comments.paginator.page_range %}
+            {% if comments.number == l %}
+            <li class="page-item active"><span class="page-link">{{ num }} <span class="sr-only">(current)</span></span>
+            </li>
+            {% else %}
+            <li><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% endif %}
+            {% endfor %}
+            {% if comments.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ comments.next_page_number }}">Next</a></li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+            {% endif %}
+          </ul>
+          {% endif %}
+        </nav>
+      </div>
+
+      <div id="myDIV" style="display:block;">
+        <form id="myForm" method="post">
+          <h2>Create new comment</h2>
+          {{ comment_form|crispy }}
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script>
+  function formExit() {
+    document.getElementById("newForm").remove();
+  }
+
+  function myFunction(id) {
+    if (document.contains(document.getElementById("newForm"))) {
+      document.getElementById("newForm").remove();
+    }
+
+    var d1 = document.getElementById(id);
+    d1.insertAdjacentHTML('afterend',
+      '<form id="newForm" class="form-insert py-2" method="post"> \
+                <div class="d-flex justify-content-between"><h2>Reply:</h2><div><button type="button" class="btn btn-outline-secondary" onclick="formExit()"">Close</button></div></div> \
+                <label for="id_name">Name:</label> \
+                <input type="text" name="name" class="col-sm-12" maxlength="50" required="" id="id_name">\
+                <select name="parent" class="d-none" id="id_parentt"> \
+                <option value="' + id + '" selected="' + id + '"></option> \
+                </select> \
+                <label for="id_email">Email:</label> \
+                <input type="text" name="email" class="col-sm-12" maxlength="254" required="" id="id_email"> \
+                <label for="id_content">Content:</label> \
+                <textarea name="content" cols="40" rows="5" class="form-control" required id="id_content"></textarea> \
+                {% csrf_token %} \
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button> \
+              </form>');
+
+    //document.querySelector('#id_parentt [value="' + id + '"]').selected = true;
+  }
+
+  $('#myForm').trigger("reset");
+</script>
+
+
+{% endblock body %}

@@ -1,3 +1,8 @@
 *.pyc
 *vscode
 *.env
+*venv
+*./templates/articledump.html
+*.gitignore
+*.ipynb
+*.ipynb_checkpoints

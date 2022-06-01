@@ -1,0 +1,168 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+:root {
+    --dark-color: #16181a;
+    --dark-blue: #0b132b;
+    --light-color: #343a40;
+    --red: #f42735;
+    --light-red: #af0614;
+    --background: #1a1b1d;
+    --animation-duration: 2s;
+}
+body {
+    margin: 0;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    background-color: #000000;
+}
+
+.row {
+    width: 100%;
+}
+
+.card-img-top {
+    background-color: transparent;
+}
+
+.text-dark {
+    background-color: beige;
+    text-align: center;
+    font-weight: 100;
+    font-size:18px;
+    border-radius: 3px;
+    border-color: beige;
+    color: beige;
+}
+
+.card-text-white-bg-primary-mb-3 {
+    position: relative;
+    height: 10vh;
+    font-size: 15px;
+    color: #f5f5f5;
+    text-align: center;
+    top:50%;
+    bottom: 50;
+    width:350px;
+}
+
+.card-text{
+    width: 100%;
+    color:rgb(185, 97, 34);
+}
+.card-body{
+    width: 100%;
+    color:rgb(185, 97, 3);
+}
+
+header {
+    width: 100vw;
+    height: 8vh;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    z-index: 9999;
+    opacity: 0.95;
+    background: #121212;
+}
+
+.article {
+    width: 100vw;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    padding-top: 6vh;
+    padding-bottom: 5vh;
+    background-color: var(--dark-color); 
+}
+
+.article > .container > .img-position {
+    display: flex;
+    margin-top: 3vw;
+}
+.article > .container > .img-position > .card-img-top {
+    width: 15vw;
+    height: 15vw;
+    /* filter: grayscale(100%); */
+    border-radius: 0.2em;
+    margin-top: 0.8em;
+}
+
+.article > .container > .img-position > .card-body {
+    width: 70vw;
+    margin-left: 4vw;
+    margin-top: 0;
+    color: #FFFFFF;
+    font-family: Comic Mono;
+}
+.article > .container > .img-position > .card-body > .text-content {
+    font-family: SpartanRegular, serif;
+    font-size: 0.9vw;
+    color: #c01212;
+    line-height: 2.5em;
+}
+
+
+
+
+.footer {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--dark-color);
+}
+.footer > .container {
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.footer > .container > .follow-me {
+    font-family: SpartanBold, serif;
+    font-size: 2.5vw;
+    color: #FFFFFF;
+    text-transform: uppercase;
+}
+.footer > .container > .social-media {
+    height: 5vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5vw;
+}
+.footer > .container > .social-media > img {
+    width: 2vw;
+    height: 2vw;
+    margin: 2vw;
+    cursor: pointer;
+}
+.footer > .container > p > .email {
+    font-family: SpartanBold, serif;
+    font-size: 1vw;
+    color: var(--red);
+    text-decoration: none;
+    transition: .3s;
+    margin-top: 5vw;
+}
+.footer > .container > p > .email:hover {
+    cursor: pointer;
+    color: var(--light-red);
+}
+.footer > .copyrights {
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.footer > .copyrights > p {
+    font-family: SpartanRegular, serif;
+    font-size: 0.5vw;
+    color: #424750;
+}
